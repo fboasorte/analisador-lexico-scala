@@ -1,0 +1,245 @@
+options {
+    IGNORE_CASE = true;
+  }
+
+// DUVIDAS
+// O lower e upper em identifeirs se refere a upper case e lower case?
+// ID
+
+// TODO:
+// Mudar para nao reconhecer 0.0 como float
+
+PARSER_BEGIN(Scala)
+
+    public class Scala {
+        public static void main(String args[]) throws ParseException {
+            Scala parser;
+
+		    if(args.length == 0) {
+		    	parser = new Scala(System.in);
+		    }
+		    else {
+		    	try {
+		    		parser = new Scala(new java.io.FileInputStream(args[0]));
+		    	}
+		    	catch(java.io.FileNotFoundException e) {
+		    		System.out.println ("Error: The file " + args[0] + " was not found.");
+		    		return;
+		    	}
+		    }
+
+		    try {
+		    	parser.Start();
+		    }
+		    catch(ParseException e){
+		    	System.out.println ("Error: There was an error during the parse.");
+		    	System.out.println (e.getMessage());
+		    }
+		    catch(TokenMgrError e){
+		    	System.out.println ("Error: There was an error.");
+		    	System.out.println (e.getMessage());
+		    }
+        }
+    }
+
+PARSER_END(Scala)
+
+// Estruturas de escape
+SKIP:{
+	"\t" | "\n" | "\r" | "\r\n" | "\u0020"
+}
+
+TOKEN: {
+	< PARENTERESE_ESQ: "(" > { System.out.println("PARENTESE_ESQ " + image); } |
+	< PARENTERESE_DIR: ")" > { System.out.println("PARENTESE_DIR " + image); } |
+	< COLCHETE_ESQ: "[" > { System.out.println("COLCHETE_ESQ " + image); } |
+	< COLCHETE_DIR: "]" > { System.out.println("COLCHETE_DIR " + image); } |
+	< CHAVE_ESQ: "{" > { System.out.println("CHAVE_ESQ " + image); } |
+	< CHAVE_DIR: "}" > { System.out.println("CHAVE_DIR " + image); } 
+}
+
+// Digitos
+TOKEN: {
+	< #NON_ZERO_DIGIT: ["1"-"9"] > |
+	< #DIGIT: ["0"-"9"] > |
+	< #HEX_DIGIT: ["0"-"9", "a"-"f", "A"-"F"]>
+}
+
+// Sufixos
+TOKEN: {
+	< #INTEGER_SUFIX: ("l" | "L") > |
+	< #FLOAT_SUFIX: ("f" | "F" | "d" | "D") >
+}
+
+// Numerais
+TOKEN: {
+	< #DECIMAL_NUMERAL: "0" | <NON_ZERO_DIGIT>(<DIGIT>)* > |
+	< #HEX_NUMERAL: "0"("x" | "X")(<HEX_DIGIT>)* >
+}
+
+// Float
+TOKEN: {
+	< #EXPONENT_PART: ("E" | "e")("+" | "-")?(<DIGIT>)+ >
+}
+
+// Escapes
+TOKEN: {
+	< #ESCAPE_SEQ: ("\\b" | "\\t" | "\\n" | "\\f" | "\\r" | "\\\"" | "\\\'" | "\\\\") >
+}
+
+// Palavras Reservadas
+TOKEN: {	
+	< ABSTRACT: "abstract" >  { System.out.println("ABSTRACT " + image); } |
+	< CASE: "case" >  { System.out.println("CASE " + image); } |
+	< CATCH: "catch" >  { System.out.println("CATCH " + image); } |
+	< CLASS: "class" >  { System.out.println("CLASS " + image); } |
+	< DEF: "def" >  { System.out.println("DEF " + image); } |
+	< DO: "do" >  { System.out.println("DO " + image); } |
+	< ELSE: "else" >  { System.out.println("ELSE " + image); } |
+	< EXTENDS: "extends" >  { System.out.println("EXTENDS " + image); } |
+	< FINAL: "final" >  { System.out.println("FINAL " + image); } |
+	< FINALLY: "finally" >  { System.out.println("FINALLY " + image); } |
+	< FOR: "for" >  { System.out.println("FOR " + image); } |
+	< FORSOME: "forSome" >  { System.out.println("FORSOME " + image); } |
+	< IF: "if" >  { System.out.println("IF " + image); } |
+	< IMPLICIT: "implicit" >  { System.out.println("IMPLICIT " + image); } |
+	< IMPORT: "import" >  { System.out.println("IMPORT " + image); } |
+	< LAZY: "lazy" >  { System.out.println("LAZY " + image); } |
+	< MACRO: "macro" >  { System.out.println("MACRO " + image); } |
+	< NEW: "new" >  { System.out.println("NEW " + image); } |
+	< NULL: "null" >  { System.out.println("NULL " + image); } |
+	< OBJECT: "object" >  { System.out.println("OBJECT " + image); } |
+	< OVERRIDE: "override" >  { System.out.println("OVERRIDE " + image); } |
+	< PACKAGE: "package" >  { System.out.println("PACKAGE " + image); } |
+	< PRIVATE: "private" >  { System.out.println("PRIVATE " + image); } |
+	< PROTECTED: "protected" >  { System.out.println("PROTECTED " + image); } |
+	< RETURN: "return" >  { System.out.println("RETURN " + image); } |
+	< SEALED: "sealed" >  { System.out.println("SEALED " + image); } |
+	< SUPER: "super" >  { System.out.println("SUPER " + image); } |
+	< THIS: "this" >  { System.out.println("THIS " + image); } |
+	< THROW: "throw" >  { System.out.println("THROW " + image); } |
+	< TRAIT: "trait" >  { System.out.println("TRAIT " + image); } |
+	< TRY: "try" >  { System.out.println("TRY " + image); } |
+    < VAL: "val" >  { System.out.println("VAL " + image); } |
+	< VAR: "var" >  { System.out.println("VAR " + image); } |
+	< WHILE: "WHILE" >  { System.out.println("WHILE " + image); } |
+    < WITH: "with" >  { System.out.println("WITH " + image); } |
+	< YIELD: "yield" >  { System.out.println("YIELD " + image); } |
+	< UNDERSCORE: "_" >  { System.out.println("UNDERSCORE " + image); } |
+	< DOISPONTOS: ":" >  { System.out.println("DOISPONTOS " + image); } |
+	< IGUAL: "=" >  { System.out.println("IGUAL " + image); } |
+	< IGUALMAIOR: "=>" >  { System.out.println("IGUALMAIOR " + image); } |
+	< MENORHIFEN: "<-" >  { System.out.println("MENORHIFEN " + image); } |
+	< MENORDOISPONTOS: "<:" >  { System.out.println("MENORDOISPONTOS " + image); } |
+	< MENORPORCENTAGEM: "<%" >  { System.out.println("MENORPORCENTAGEM " + image); } |
+	< MAIORDOISPONTOS: ">:" >  { System.out.println("MAIORDOISPONTOS " + image); } |
+	< HASHTAG: "#" >  { System.out.println("HASHTAG " + image); } |
+	< ARROBA: "@" >  { System.out.println("ARROBA " + image); }
+}
+
+// Auxiliar
+TOKEN: {
+	< #PRINTABLE_CHARACTERS: ["\u0020"-"\u007F"] > |
+	< #MATHEMATICAL_SYMBOLS: "+" | "-" | "/" | "*" | "%" > |
+	< #OPCHAR: ["\u0021"-"\u0026","\u003C"-"\u0040"] | "/" | ":" | "^" | "_" | "|" | "~" | "\u007F" | <MATHEMATICAL_SYMBOLS> > |
+	< #LETRA: ["a"-"z","A"-"Z"] > |
+	< DELIMITER: "`" | "'" | "\"" | "." | ";" | "," > { System.out.println("DELIMITER " + image); }
+}
+
+// Identificadores
+TOKEN: {
+	< #OP: (<OPCHAR>)+ > |
+	< #VARID: ["a"-"z"]<IDREST> > |
+	< #PLAINID: (["A"-"Z"]<IDREST>) | <VARID> | <OP> > |
+	< #IDREST: (<LETRA> | <DIGIT>)* ("_"<OP>)? > |
+	< ID: <PLAINID> | ("`"<STRING_LITERAL>"`") > { System.out.println("ID " + image); }
+}
+
+// Literais
+TOKEN: {
+	< INTEGER_LITERAL: ("-")?(<DECIMAL_NUMERAL> | <HEX_NUMERAL>)(<INTEGER_SUFIX>)? > { System.out.println("INTEIRO " + image); } |
+
+	< FLOAT_LITERAL: ("-")(((<DIGIT>)+ "." (<DIGIT>)+ (<EXPONENT_PART>)? (<FLOAT_SUFIX>)?) |
+					 ("." (<DIGIT>)+ (<EXPONENT_PART>)? (<FLOAT_SUFIX>)?) |
+					 ((<DIGIT>)+ <EXPONENT_PART> (<FLOAT_SUFIX>)?) |
+					 ((<DIGIT>)+ (<EXPONENT_PART>)? <FLOAT_SUFIX>)) > { System.out.println("FLOAT " + image); } |
+
+	< BOOLEAN_LITERAL: "true" | "false" > { System.out.println("BOOLEAN " + image); } |
+
+	< CHAR_LITERAL: "'"( <PRINTABLE_CHARACTERS> | <ESCAPE_SEQ>)"'" > { System.out.println("CHAR " + image); } |
+
+	< STRING_LITERAL: "\""(~["\""]  | <ESCAPE_SEQ>)* "\""> { System.out.println("STRING " + image); } |
+
+	< NULL_LITERAL: "\'null\'" > { System.out.println("NULL " + image); }
+}
+
+
+
+void Start(): {}
+{
+	(
+		( < INTEGER_LITERAL > ) |
+		( < FLOAT_LITERAL >) |
+		( < BOOLEAN_LITERAL > ) |
+		( < CHAR_LITERAL >) |
+		( < STRING_LITERAL >) |
+		( < NULL_LITERAL >) |
+		( < ID >) |
+
+		( < ABSTRACT > ) |
+		( < CASE > ) |
+		( < CATCH > ) |
+		( < CLASS > ) |
+		( < DEF > ) |
+		( < DO > ) |
+		( < ELSE > ) |
+		( < EXTENDS > ) |
+		( < FINAL > ) |
+		( < FINALLY > ) |
+		( < FOR > ) |
+		( < FORSOME > ) |
+		( < IF > ) |
+		( < IMPLICIT > ) |
+		( < IMPORT > ) |
+		( < LAZY > ) |
+		( < MACRO > ) |
+		( < NEW > ) |
+		( < NULL > ) |
+		( < OBJECT > ) |
+		( < OVERRIDE > ) |
+		( < PACKAGE > ) |
+		( < PRIVATE > ) |
+		( < PROTECTED > ) |
+		( < RETURN > ) |
+		( < SEALED > ) |
+		( < SUPER > ) |
+		( < THIS > ) |
+		( < THROW > ) |
+		( < TRAIT > ) |
+		( < TRY > ) |
+		( < VAL > ) |
+		( < VAR > ) |
+		( < WHILE > ) |
+		( < WITH > ) |
+		( < YIELD > ) |
+		( < UNDERSCORE > ) |
+		( < DOISPONTOS > ) |
+		( < IGUAL > ) |
+		( < IGUALMAIOR > ) |
+		( < MENORHIFEN > ) |
+		( < MENORDOISPONTOS > ) |
+		( < MENORPORCENTAGEM > ) |
+		( < MAIORDOISPONTOS > ) |
+		( < HASHTAG > ) |
+		( < ARROBA > ) |
+		( < PARENTERESE_ESQ > ) |
+		( < PARENTERESE_DIR > )|
+		( < COLCHETE_ESQ > ) |
+		( < COLCHETE_DIR>  )|
+		( < CHAVE_ESQ> ) |
+		( < CHAVE_DIR> ) |
+		( < DELIMITER> )
+
+	)*
+	<EOF>
+}
