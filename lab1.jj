@@ -3,8 +3,6 @@ options {
   }
 
 // DUVIDAS
-// O lower e upper em identifeirs se refere a upper case e lower case?
-// ID
 
 // TODO:
 // Mudar para nao reconhecer 0.0 como float
@@ -170,7 +168,9 @@ TOKEN: {
 
 	< STRING_LITERAL: "\""(~["\""]  | <ESCAPE_SEQ>)* "\""> { System.out.println("STRING " + image); } |
 
-	< NULL_LITERAL: "\'null\'" > { System.out.println("NULL " + image); }
+	< NULL_LITERAL: "\'null\'" > { System.out.println("NULL " + image); } |
+
+	< SYMBOL_LITERAL: "\'"<PLAINID> > { System.out.println("SIMBOLO " + image); }
 }
 
 
@@ -185,6 +185,7 @@ void Start(): {}
 		( < STRING_LITERAL >) |
 		( < NULL_LITERAL >) |
 		( < ID >) |
+		( <SYMBOL_LITERAL> ) |
 
 		( < ABSTRACT > ) |
 		( < CASE > ) |
