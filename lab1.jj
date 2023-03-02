@@ -157,7 +157,7 @@ TOKEN: {
 TOKEN: {
 	< INTEGER_LITERAL: ("-")?(<DECIMAL_NUMERAL> | <HEX_NUMERAL>)(<INTEGER_SUFIX>)? > { System.out.println("INTEIRO " + image); } |
 
-	< FLOAT_LITERAL: ("-")(((<DIGIT>)+ "." (<DIGIT>)+ (<EXPONENT_PART>)? (<FLOAT_SUFIX>)?) |
+	< FLOAT_LITERAL: ("-")?(((<DIGIT>)+ "." (<DIGIT>)+ (<EXPONENT_PART>)? (<FLOAT_SUFIX>)?) |
 					 ("." (<DIGIT>)+ (<EXPONENT_PART>)? (<FLOAT_SUFIX>)?) |
 					 ((<DIGIT>)+ <EXPONENT_PART> (<FLOAT_SUFIX>)?) |
 					 ((<DIGIT>)+ (<EXPONENT_PART>)? <FLOAT_SUFIX>)) > { System.out.println("FLOAT " + image); } |
