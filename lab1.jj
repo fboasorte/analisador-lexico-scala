@@ -2,11 +2,6 @@ options {
     IGNORE_CASE = true;
   }
 
-// DUVIDAS
-
-// TODO:
-// Mudar para nao reconhecer 0.0 como float
-
 PARSER_BEGIN(Scala)
 
     public class Scala {
@@ -43,8 +38,14 @@ PARSER_BEGIN(Scala)
 PARSER_END(Scala)
 
 // Estruturas de escape
-SKIP:{
+SKIP: {
 	"\t" | "\n" | "\r" | "\r\n" | "\u0020"
+}
+
+//Comments
+SPECIAL_TOKEN: {
+    < LINE_COMMENT : "//"(~["/","!","\n"]|"//")(~["\n"])* > |
+    < BLOCK_COMMENT: "/*" ( ~["*","!"] | "\r\n"|"**" )* "*/" >  
 }
 
 TOKEN: {
@@ -104,6 +105,7 @@ TOKEN: {
 	< IMPORT: "import" >  { System.out.println("IMPORT " + image); } |
 	< LAZY: "lazy" >  { System.out.println("LAZY " + image); } |
 	< MACRO: "macro" >  { System.out.println("MACRO " + image); } |
+	< MATCH: "match" >  { System.out.println("MATCH " + image); } |
 	< NEW: "new" >  { System.out.println("NEW " + image); } |
 	< NULL: "null" >  { System.out.println("NULL " + image); } |
 	< OBJECT: "object" >  { System.out.println("OBJECT " + image); } |
@@ -118,11 +120,22 @@ TOKEN: {
 	< THROW: "throw" >  { System.out.println("THROW " + image); } |
 	< TRAIT: "trait" >  { System.out.println("TRAIT " + image); } |
 	< TRY: "try" >  { System.out.println("TRY " + image); } |
+	< TYPE: "type" >  { System.out.println("TYPE " + image); } |
     < VAL: "val" >  { System.out.println("VAL " + image); } |
 	< VAR: "var" >  { System.out.println("VAR " + image); } |
 	< WHILE: "WHILE" >  { System.out.println("WHILE " + image); } |
     < WITH: "with" >  { System.out.println("WITH " + image); } |
-	< YIELD: "yield" >  { System.out.println("YIELD " + image); } |
+	< YIELD: "yield" >  { System.out.println("YIELD " + image); }
+}
+
+// Simbolos Reservados
+TOKEN: {
+	< VIRGULA: "," >  { System.out.println("VIRGULA " + image); } |
+	< PONTO_E_VIRGULA: ";" >  { System.out.println("VIRGULA " + image); } |
+	< PONTO: "." >  { System.out.println("PONTO " + image); } |
+	< ASPAS_DUPLAS: "\"" >  { System.out.println("ASPAS_DUPLAS " + image); } |
+	< ASPAS_SIMPLES: "'" >  { System.out.println("ASPAS_SIMPLES " + image); } |
+	< ACENTO: "`" >  { System.out.println("ACENTO " + image); } |
 	< UNDERSCORE: "_" >  { System.out.println("UNDERSCORE " + image); } |
 	< DOISPONTOS: ":" >  { System.out.println("DOISPONTOS " + image); } |
 	< IGUAL: "=" >  { System.out.println("IGUAL " + image); } |
@@ -134,8 +147,8 @@ TOKEN: {
 	< IGUALMAIOR: "=>" >  { System.out.println("IGUALMAIOR " + image); } |
 	< MENORHIFEN: "<-" >  { System.out.println("MENORHIFEN " + image); } |
 	// Simbolos equivalentes ao de cima na linguagem
-	< IGUALMAIOR: "\u21D2" >  { System.out.println("IGUALMAIOR " + image); } |
-	< MENORHIFEN: "\u2190" >  { System.out.println("MENORHIFEN " + image); } 
+	< IGUALMAIOR_SPE: "\u21D2" >  { System.out.println("IGUALMAIOR " + image); } |
+	< MENORHIFEN_SPE: "\u2190" >  { System.out.println("MENORHIFEN " + image); } 
 }
 
 // Auxiliar
@@ -143,9 +156,8 @@ TOKEN: {
 	< #PRINTABLE_CHARACTERS: ["\u0020"-"\u007F"] > |
 	< #MATHEMATICAL_SYMBOLS: "+" | "-" | "/" | "*" | "%" > |
 	< #OPCHAR: ["\u0021"-"\u0026","\u003C"-"\u0040"] | "/" | ":" | "^" | "_" | "|" | "~" | "\u007F" | <MATHEMATICAL_SYMBOLS> > |
-	< #LETRA: ["a"-"z","A"-"Z"] > |
-	< #MULTILINECHAR: (~["\""])* > |
-	< DELIMITER: "`" | "'" | "\"" | "." | ";" | "," > { System.out.println("DELIMITER " + image); }
+	< #LETRA: ["a"-"z","A"-"Z"] | "$" | "_"> |
+	< #MULTILINECHAR: (~["\""])* >
 }
 
 // Identificadores
@@ -153,12 +165,76 @@ TOKEN: {
 	< #OP: (<OPCHAR>)+ > |
 	< #VARID: ["a"-"z"]<IDREST> > |
 	< #PLAINID: (["A"-"Z"]<IDREST>) | <VARID> | <OP> > |
-	< #IDREST: (<LETRA> | <DIGIT>)* ("_"<OP>)? > |
+	< #IDREST: (<LETRA> | <DIGIT>)* ("_"<OP>)? >
+}
+
+// New line characters
+// Defini mas não printei, pq senão toda sequencia de comendos seria um nova linha
+TOKEN: {
+	< #SEMI: <DOISPONTOS> | (<NL>)+ > |
+	< #NL: <NL_PRECEDING> | <NL_PROCEDING> > |
+	< #NL_PRECEDING: (<THIS> | <NULL> | "true" | "false" | 
+		<RETURN> | <TYPE> | <UNDERSCORE> | <PARENTERESE_DIR> | 
+		<COLCHETE_DIR> | <CHAVE_DIR> | <INTEGER_LITERAL> |
+		<FLOAT_LITERAL> | <BOOLEAN_LITERAL> | <CHAR_LITERAL> |
+		<STRING_LITERAL> | <MULTILINE_STRING_LITERAL> |
+		<NULL_LITERAL> | <SYMBOL_LITERAL> | <ID>)"\n" > |
+
+	< #NL_PROCEDING: "\n"(( < INTEGER_LITERAL > ) |
+		( < FLOAT_LITERAL >) |
+		( < BOOLEAN_LITERAL > ) |
+		( < CHAR_LITERAL >) |
+		( < STRING_LITERAL >) |
+		( < MULTILINE_STRING_LITERAL > ) |
+		( < NULL_LITERAL >) |
+		( < ID >) |
+		( < SYMBOL_LITERAL > ) |
+		( < ABSTRACT > ) |
+		( < CASE > ) |
+		( < CLASS > ) |
+		( < DEF > ) |
+		( < DO > ) |
+		( < FINAL > ) |
+		( < FOR > ) |
+		( < IF > ) |
+		( < IMPLICIT > ) |
+		( < IMPORT > ) |
+		( < LAZY > ) |
+		( < MACRO > ) |
+		( < MATCH > ) |
+		( < NEW > ) |
+		( < NULL > ) |
+		( < OBJECT > ) |
+		( < OVERRIDE > ) |
+		( < PACKAGE > ) |
+		( < PRIVATE > ) |
+		( < PROTECTED > ) |
+		( < RETURN > ) |
+		( < SEALED > ) |
+		( < SUPER > ) |
+		( < THIS > ) |
+		( < THROW > ) |
+		( < TRAIT > ) |
+		( < TRY > ) |
+		( < VAL > ) |
+		( < VAR > ) |
+		( < WHILE > ) |
+		( < UNDERSCORE > ) |
+		( < ARROBA > ) |
+		( < PARENTERESE_ESQ > ) |
+		( < CHAVE_ESQ> )) >
+}
+
+TOKEN: {
+	<#PRINTABLE_CHAR_NO_DOUBLE_QUOTES: [" ","!", "#" - "~"] > |
+	<#STRING_ELEMENT: (<PRINTABLE_CHAR_NO_DOUBLE_QUOTES> | <ESCAPE_SEQ>)* >
 }
 
 // Literais
+// Para ID, na documentação fala que é string_literal, no entanto não dá certo para o exemplo big_bob++=`def`
+// Eu acabei deixando STRING_LITERAL por que é o que está escrito na documentação enviada, mas acho que o certo é STRING_ELEMENT
 TOKEN: {
-	< ID: <PLAINID> | ("`"<STRING_LITERAL>"`") > { System.out.println("ID " + image); }
+	< ID: <PLAINID> | "`"<STRING_LITERAL>"`" > { System.out.println("ID " + image); } |
 
 	< INTEGER_LITERAL: ("-")?(<DECIMAL_NUMERAL> | <HEX_NUMERAL>)(<INTEGER_SUFIX>)? > { System.out.println("INTEIRO " + image); } |
 
@@ -171,7 +247,7 @@ TOKEN: {
 
 	< CHAR_LITERAL: "'"( <PRINTABLE_CHARACTERS> | <ESCAPE_SEQ>)"'" > { System.out.println("CHAR " + image); } |
 
-	< STRING_LITERAL: "\""(~["\""]  | <ESCAPE_SEQ>)* "\""> { System.out.println("STRING " + image); } |
+	< STRING_LITERAL: "\"" <STRING_ELEMENT> "\""> { System.out.println("STRING " + image); } |
 
 	< MULTILINE_STRING_LITERAL: "\"" "\"" "\"" <MULTILINECHAR> "\"" "\"" "\"" > { System.out.println("MULTILINE_STRING " + image); } |
 
@@ -193,7 +269,7 @@ void Start(): {}
 		( < MULTILINE_STRING_LITERAL > ) |
 		( < NULL_LITERAL >) |
 		( < ID >) |
-		( <SYMBOL_LITERAL> ) |
+		( < SYMBOL_LITERAL > ) |
 
 		( < ABSTRACT > ) |
 		( < CASE > ) |
@@ -212,6 +288,7 @@ void Start(): {}
 		( < IMPORT > ) |
 		( < LAZY > ) |
 		( < MACRO > ) |
+		( < MATCH > ) |
 		( < NEW > ) |
 		( < NULL > ) |
 		( < OBJECT > ) |
@@ -226,13 +303,20 @@ void Start(): {}
 		( < THROW > ) |
 		( < TRAIT > ) |
 		( < TRY > ) |
+		( < TYPE > ) |
 		( < VAL > ) |
 		( < VAR > ) |
 		( < WHILE > ) |
 		( < WITH > ) |
 		( < YIELD > ) |
+
+		( < VIRGULA > )|
+		( < PONTO_E_VIRGULA > ) |
+		( < PONTO > ) |
+		( < ASPAS_DUPLAS > ) |
+		( < ASPAS_SIMPLES > ) |
+		( < ACENTO > ) |
 		( < UNDERSCORE > ) |
-		( < DOISPONTOS > ) |
 		( < IGUAL > ) |
 		( < IGUALMAIOR > ) |
 		( < MENORHIFEN > ) |
@@ -246,8 +330,7 @@ void Start(): {}
 		( < COLCHETE_ESQ > ) |
 		( < COLCHETE_DIR>  )|
 		( < CHAVE_ESQ> ) |
-		( < CHAVE_DIR> ) |
-		( < DELIMITER> )
+		( < CHAVE_DIR> )
 
 	)*
 	<EOF>
