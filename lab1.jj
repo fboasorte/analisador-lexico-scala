@@ -126,13 +126,16 @@ TOKEN: {
 	< UNDERSCORE: "_" >  { System.out.println("UNDERSCORE " + image); } |
 	< DOISPONTOS: ":" >  { System.out.println("DOISPONTOS " + image); } |
 	< IGUAL: "=" >  { System.out.println("IGUAL " + image); } |
-	< IGUALMAIOR: "=>" >  { System.out.println("IGUALMAIOR " + image); } |
-	< MENORHIFEN: "<-" >  { System.out.println("MENORHIFEN " + image); } |
 	< MENORDOISPONTOS: "<:" >  { System.out.println("MENORDOISPONTOS " + image); } |
 	< MENORPORCENTAGEM: "<%" >  { System.out.println("MENORPORCENTAGEM " + image); } |
 	< MAIORDOISPONTOS: ">:" >  { System.out.println("MAIORDOISPONTOS " + image); } |
 	< HASHTAG: "#" >  { System.out.println("HASHTAG " + image); } |
-	< ARROBA: "@" >  { System.out.println("ARROBA " + image); }
+	< ARROBA: "@" >  { System.out.println("ARROBA " + image); } |
+	< IGUALMAIOR: "=>" >  { System.out.println("IGUALMAIOR " + image); } |
+	< MENORHIFEN: "<-" >  { System.out.println("MENORHIFEN " + image); } |
+	// Simbolos equivalentes ao de cima na linguagem
+	< IGUALMAIOR: "\u21D2" >  { System.out.println("IGUALMAIOR " + image); } |
+	< MENORHIFEN: "\u2190" >  { System.out.println("MENORHIFEN " + image); } 
 }
 
 // Auxiliar
@@ -151,11 +154,12 @@ TOKEN: {
 	< #VARID: ["a"-"z"]<IDREST> > |
 	< #PLAINID: (["A"-"Z"]<IDREST>) | <VARID> | <OP> > |
 	< #IDREST: (<LETRA> | <DIGIT>)* ("_"<OP>)? > |
-	< ID: <PLAINID> | ("`"<STRING_LITERAL>"`") > { System.out.println("ID " + image); }
 }
 
 // Literais
 TOKEN: {
+	< ID: <PLAINID> | ("`"<STRING_LITERAL>"`") > { System.out.println("ID " + image); }
+
 	< INTEGER_LITERAL: ("-")?(<DECIMAL_NUMERAL> | <HEX_NUMERAL>)(<INTEGER_SUFIX>)? > { System.out.println("INTEIRO " + image); } |
 
 	< FLOAT_LITERAL: ("-")?(((<DIGIT>)+ "." (<DIGIT>)+ (<EXPONENT_PART>)? (<FLOAT_SUFIX>)?) |
