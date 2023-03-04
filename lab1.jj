@@ -141,6 +141,7 @@ TOKEN: {
 	< #MATHEMATICAL_SYMBOLS: "+" | "-" | "/" | "*" | "%" > |
 	< #OPCHAR: ["\u0021"-"\u0026","\u003C"-"\u0040"] | "/" | ":" | "^" | "_" | "|" | "~" | "\u007F" | <MATHEMATICAL_SYMBOLS> > |
 	< #LETRA: ["a"-"z","A"-"Z"] > |
+	< #MULTILINECHAR: (~["\""])* > |
 	< DELIMITER: "`" | "'" | "\"" | "." | ";" | "," > { System.out.println("DELIMITER " + image); }
 }
 
@@ -168,6 +169,8 @@ TOKEN: {
 
 	< STRING_LITERAL: "\""(~["\""]  | <ESCAPE_SEQ>)* "\""> { System.out.println("STRING " + image); } |
 
+	< MULTILINE_STRING_LITERAL: "\"" "\"" "\"" <MULTILINECHAR> "\"" "\"" "\"" > { System.out.println("MULTILINE_STRING " + image); } |
+
 	< NULL_LITERAL: "\'null\'" > { System.out.println("NULL " + image); } |
 
 	< SYMBOL_LITERAL: "\'"<PLAINID> > { System.out.println("SIMBOLO " + image); }
@@ -183,6 +186,7 @@ void Start(): {}
 		( < BOOLEAN_LITERAL > ) |
 		( < CHAR_LITERAL >) |
 		( < STRING_LITERAL >) |
+		( < MULTILINE_STRING_LITERAL > ) |
 		( < NULL_LITERAL >) |
 		( < ID >) |
 		( <SYMBOL_LITERAL> ) |
