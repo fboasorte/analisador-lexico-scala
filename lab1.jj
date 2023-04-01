@@ -49,12 +49,15 @@ SPECIAL_TOKEN: {
 }
 
 TOKEN: {
-	< PARENTERESE_ESQ: "(" > { System.out.println("PARENTESE_ESQ " + image); } |
-	< PARENTERESE_DIR: ")" > { System.out.println("PARENTESE_DIR " + image); } |
-	< COLCHETE_ESQ: "[" > { System.out.println("COLCHETE_ESQ " + image); } |
-	< COLCHETE_DIR: "]" > { System.out.println("COLCHETE_DIR " + image); } |
-	< CHAVE_ESQ: "{" > { System.out.println("CHAVE_ESQ " + image); } |
-	< CHAVE_DIR: "}" > { System.out.println("CHAVE_DIR " + image); } 
+	< PARENTERESE_ESQ: "(" > { System.out.println("( " + image); } |
+	< PARENTERESE_DIR: ")" > { System.out.println(") " + image); } |
+	< COLCHETE_ESQ: "[" > { System.out.println("[ " + image); } |
+	< COLCHETE_DIR: "]" > { System.out.println("] " + image); } |
+	< CHAVE_ESQ: "{" > { System.out.println("{ " + image); } |
+	< CHAVE_DIR: "}" > { System.out.println("} " + image); } |
+	< AND: "&&" > { System.out.println("&& " + image); } |
+	< OR: "||" > { System.out.println("|| " + image); } |
+	< NOT: "!" > { System.out.println("! " + image); } 
 }
 
 // Digitos
@@ -130,22 +133,33 @@ TOKEN: {
 
 // Simbolos Reservados
 TOKEN: {
-	< VIRGULA: "," >  { System.out.println("VIRGULA " + image); } |
-	< PONTO_E_VIRGULA: ";" >  { System.out.println("VIRGULA " + image); } |
-	< PONTO: "." >  { System.out.println("PONTO " + image); } |
-	< ASPAS_DUPLAS: "\"" >  { System.out.println("ASPAS_DUPLAS " + image); } |
-	< ASPAS_SIMPLES: "'" >  { System.out.println("ASPAS_SIMPLES " + image); } |
-	< ACENTO: "`" >  { System.out.println("ACENTO " + image); } |
-	< UNDERSCORE: "_" >  { System.out.println("UNDERSCORE " + image); } |
-	< DOISPONTOS: ":" >  { System.out.println("DOISPONTOS " + image); } |
-	< IGUAL: "=" >  { System.out.println("IGUAL " + image); } |
-	< MENORDOISPONTOS: "<:" >  { System.out.println("MENORDOISPONTOS " + image); } |
-	< MENORPORCENTAGEM: "<%" >  { System.out.println("MENORPORCENTAGEM " + image); } |
-	< MAIORDOISPONTOS: ">:" >  { System.out.println("MAIORDOISPONTOS " + image); } |
-	< HASHTAG: "#" >  { System.out.println("HASHTAG " + image); } |
-	< ARROBA: "@" >  { System.out.println("ARROBA " + image); } |
-	< IGUALMAIOR: "=>" >  { System.out.println("IGUALMAIOR " + image); } |
-	< MENORHIFEN: "<-" >  { System.out.println("MENORHIFEN " + image); } |
+	< VIRGULA: "," >  { System.out.println(", " + image); } |
+	< PONTO_E_VIRGULA: ";" >  { System.out.println("; " + image); } |
+	< PONTO: "." >  { System.out.println(". " + image); } |
+	< ASPAS_DUPLAS: "\"" >  { System.out.println("\" " + image); } |
+	< ASPAS_SIMPLES: "'" >  { System.out.println("' " + image); } |
+	< ACENTO: "`" >  { System.out.println("` " + image); } |
+	< UNDERSCORE: "_" >  { System.out.println("_ " + image); } |
+	< DOISPONTOS: ":" >  { System.out.println(": " + image); } |
+	< IGUAL: "=" >  { System.out.println("= " + image); } |
+	< MENORDOISPONTOS: "<:" >  { System.out.println("<: " + image); } |
+	< MENORPORCENTAGEM: "<%" >  { System.out.println("<% " + image); } |
+	< MAIORDOISPONTOS: ">:" >  { System.out.println(">: " + image); } |
+	< HASHTAG: "#" >  { System.out.println("# " + image); } |
+	< ARROBA: "@" >  { System.out.println("@ " + image); } |
+	< IGUALMAIOR: "=>" >  { System.out.println("=> " + image); } |
+	< MENORHIFEN: "<-" >  { System.out.println("<- " + image); } |
+	< MAIS: "+" >  { System.out.println("+ " + image); } |
+	< MENOS: "-" >  { System.out.println("- " + image); } |
+	< BARRA: "/" >  { System.out.println("/ " + image); } |
+	< ASTERISCO: "*" >  { System.out.println("* " + image); } |
+	< PORCENTAGEM: "%" >  { System.out.println("% " + image); } |
+	< MAISIGUAL: "+=" >  { System.out.println("+= " + image); } |
+	< MENOSIGUAL: "-=" >  { System.out.println("-= " + image); } |
+	< MENOR: "<" >  { System.out.println("< " + image); } |
+	< MAIOR: ">" >  { System.out.println("> " + image); } |
+	< MENORIGUAL: "<=" >  { System.out.println("<= " + image); } |
+	< MAIORIGUAL: ">=" >  { System.out.println(">= " + image); } |
 	// Simbolos equivalentes ao de cima na linguagem
 	< IGUALMAIOR_SPE: "\u21D2" >  { System.out.println("IGUALMAIOR " + image); } |
 	< MENORHIFEN_SPE: "\u2190" >  { System.out.println("MENORHIFEN " + image); } 
@@ -234,7 +248,7 @@ TOKEN: {
 // Para ID, na documentação fala que é string_literal, no entanto não dá certo para o exemplo big_bob++=`def`
 // Eu acabei deixando STRING_LITERAL por que é o que está escrito na documentação enviada, mas acho que o certo é STRING_ELEMENT
 TOKEN: {
-	< ID: <PLAINID> | "`"<STRING_LITERAL>"`" > { System.out.println("ID " + image); } |
+	< BOOLEAN_LITERAL: "true" | "false" > { System.out.println("BOOLEAN " + image); } |
 
 	< INTEGER_LITERAL: ("-")?(<DECIMAL_NUMERAL> | <HEX_NUMERAL>)(<INTEGER_SUFIX>)? > { System.out.println("INTEIRO " + image); } |
 
@@ -242,8 +256,6 @@ TOKEN: {
 					 ("." (<DIGIT>)+ (<EXPONENT_PART>)? (<FLOAT_SUFIX>)?) |
 					 ((<DIGIT>)+ <EXPONENT_PART> (<FLOAT_SUFIX>)?) |
 					 ((<DIGIT>)+ (<EXPONENT_PART>)? <FLOAT_SUFIX>)) > { System.out.println("FLOAT " + image); } |
-
-	< BOOLEAN_LITERAL: "true" | "false" > { System.out.println("BOOLEAN " + image); } |
 
 	< CHAR_LITERAL: "'"( <PRINTABLE_CHARACTERS> | <ESCAPE_SEQ>)"'" > { System.out.println("CHAR " + image); } |
 
@@ -253,7 +265,9 @@ TOKEN: {
 
 	< NULL_LITERAL: "\'null\'" > { System.out.println("NULL " + image); } |
 
-	< SYMBOL_LITERAL: "\'"<PLAINID> > { System.out.println("SIMBOLO " + image); }
+	< SYMBOL_LITERAL: "\'"<PLAINID> > { System.out.println("SIMBOLO " + image); } |
+
+	< ID: <PLAINID> | "`"<STRING_LITERAL>"`" > { System.out.println("ID " + image); }
 }
 
 
@@ -270,6 +284,11 @@ void Start(): {}
 		( < NULL_LITERAL >) |
 		( < ID >) |
 		( < SYMBOL_LITERAL > ) |
+		( < MAIS > ) |
+		( < MENOS > ) |
+		( < BARRA > ) |
+		( < ASTERISCO > ) |
+		( < PORCENTAGEM > )
 
 		( < ABSTRACT > ) |
 		( < CASE > ) |
@@ -323,6 +342,7 @@ void Start(): {}
 		( < MENORDOISPONTOS > ) |
 		( < MENORPORCENTAGEM > ) |
 		( < MAIORDOISPONTOS > ) |
+		( < DOISPONTOS > ) |
 		( < HASHTAG > ) |
 		( < ARROBA > ) |
 		( < PARENTERESE_ESQ > ) |
@@ -330,8 +350,16 @@ void Start(): {}
 		( < COLCHETE_ESQ > ) |
 		( < COLCHETE_DIR>  )|
 		( < CHAVE_ESQ> ) |
-		( < CHAVE_DIR> )
-
+		( < CHAVE_DIR> ) |
+		( < AND > ) |
+		( < OR > ) |
+		( < NOT > ) |
+		( < MAISIGUAL > ) |
+		( < MENOSIGUAL > ) |
+		( < MENOR > ) |
+		( < MAIOR > ) |
+		( < MENORIGUAL > ) |
+		( < MAIORIGUAL > )
 	)*
 	<EOF>
 }
